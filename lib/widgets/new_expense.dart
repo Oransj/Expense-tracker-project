@@ -4,7 +4,10 @@ import 'package:expense_tracker/models/expense.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+/// This is a stateful widget since it stores the user input.
+/// Creates the overlay for adding a new expense and calls the callback when the user finishes.
 class NewExpense extends StatefulWidget {
+  //Constructor
   const NewExpense({super.key, required this.onAddExpense});
 
   final void Function(Expense expense) onAddExpense;
@@ -15,18 +18,22 @@ class NewExpense extends StatefulWidget {
   }
 }
 
+/// This is the private State class that goes with NewExpense.
 class _NewExpenseState extends State<NewExpense> {
-  final _titleController = TextEditingController();
-  final _amountController = TextEditingController();
-  DateTime? _selectedDate;
-  Category _selectedCategory = Category.leisure;
+  final _titleController = TextEditingController(); //Controller for the title
+  final _amountController = TextEditingController(); //Controller for the amount
+  DateTime? _selectedDate; //The selected date
+  Category _selectedCategory =
+      Category.leisure; //The selected category, default is leisure
 
   @override
   void dispose() {
+    //Disposes the controllers when the widget is removed
     _titleController.dispose();
     super.dispose();
   }
 
+  /// Opens the date picker.
   void _presentDatePicker() async {
     final now = DateTime.now();
     final firstDate = DateTime(1970, 1, 1);
@@ -40,6 +47,7 @@ class _NewExpenseState extends State<NewExpense> {
     });
   }
 
+  /// Shows an error dialog.
   void _showDialog() {
     if (Platform.isIOS) {
       showCupertinoDialog(
@@ -72,6 +80,7 @@ class _NewExpenseState extends State<NewExpense> {
     }
   }
 
+  /// Saves the expense data and calls the callback.
   void _saveExpenseData() {
     final amount = double.tryParse(_amountController.text);
     final invalidAmount = amount == null || amount <= 0;
@@ -90,41 +99,50 @@ class _NewExpenseState extends State<NewExpense> {
     Navigator.pop(context);
   }
 
+  /// Builds the widget.
   @override
   Widget build(BuildContext context) {
     var titleComponent = TextField(
-      controller: _titleController,
-      maxLength: 50,
+      controller: _titleController, //Sets the controller
+      maxLength: 50, //Limits the length of the input
       decoration: const InputDecoration(
+        //Sets the decoration, in this case the label
         label: Text('Title'),
       ),
     );
 
     var amountComponent = Expanded(
+      //Makes the component take up all the remaining space
       child: TextField(
-        controller: _amountController,
+        //Creates a text field
+        controller: _amountController, //Sets the controller
         keyboardType: TextInputType.number,
         decoration: const InputDecoration(
-          prefixText: '\$ ',
+          //Sets the decoration, in this case the label
+          prefixText: '\$ ', //Adds a prefix to the input
           label: Text('Amount'),
         ),
       ),
     );
 
     var dropDownButton = DropdownButton(
-        value: _selectedCategory,
-        items: Category.values
+        //Creates a dropdown button
+        value: _selectedCategory, //Sets the selected value
+        items: Category.values //Creates the items
             .map((category) => DropdownMenuItem(
+                  //Creates a dropdown menu item
                   value: category,
                   child: Text(category.name.toUpperCase()),
                 ))
-            .toList(),
+            .toList(), //Converts the iterable to a list
         onChanged: (value) {
+          //Sets the onChanged callback
           if (value == null) {
-            return;
+            return; //Returns if the value is null
           }
           setState(() {
-            _selectedCategory = value;
+            _selectedCategory =
+                value; //Sets the selected category and updates the widget
           });
         });
 
@@ -134,7 +152,7 @@ class _NewExpenseState extends State<NewExpense> {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Text(
-            _selectedDate == null
+            _selectedDate == null //Displays the selected date or a placeholder
                 ? "No date selected"
                 : formatter.format(_selectedDate!),
           ),
@@ -148,29 +166,35 @@ class _NewExpenseState extends State<NewExpense> {
 
     var cancelButton = TextButton(
       onPressed: () {
-        Navigator.pop(context);
+        Navigator.pop(context); //Closes the overlay
       },
       child: const Text(
         "Cancel",
       ),
     );
 
-    var confirmButton =
-        ElevatedButton(onPressed: _saveExpenseData, child: const Text('Save'));
+    var confirmButton = ElevatedButton(
+        onPressed: _saveExpenseData,
+        child: const Text('Save')); //Creates the confirm button
 
-    final keyBoardSize = MediaQuery.of(context).viewInsets.bottom;
+    final keyBoardSize =
+        MediaQuery.of(context).viewInsets.bottom; //Gets the keyboard size
     return LayoutBuilder(builder: (ctx, constraints) {
-      final width = constraints.maxWidth;
+      //Creates a layout builder
+      final width = constraints.maxWidth; //Gets the max width
 
       return SizedBox(
-        height: double.infinity,
+        height:
+            double.infinity, //Makes the widget take up all the available space
         child: SingleChildScrollView(
           child: Padding(
-            padding: EdgeInsets.fromLTRB(16, 16, 16, keyBoardSize + 16),
+            padding: EdgeInsets.fromLTRB(16, 16, 16,
+                keyBoardSize + 16), //Adds padding and avoids the keyboard
             child: Column(children: [
-              if (width >= 600)
+              if (width >= 600) //Checks if the screen is wider than 600 pixels
                 Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                  crossAxisAlignment:
+                      CrossAxisAlignment.start, //Aligns the text to the left
                   children: [
                     Expanded(
                       child: titleComponent,
@@ -183,7 +207,7 @@ class _NewExpenseState extends State<NewExpense> {
                 )
               else
                 titleComponent,
-              if (width >= 600)
+              if (width >= 600) //Checks if the screen is wider than 600 pixels
                 Row(
                   children: [
                     dropDownButton,

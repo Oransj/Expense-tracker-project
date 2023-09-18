@@ -7,6 +7,7 @@ class Chart extends StatelessWidget {
 
   final List<Expense> expenses;
 
+  /// Returns a list of buckets for each category.
   List<ExpenseBucket> get buckets {
     return [
       ExpenseBucket.forCategory(expenses, Category.food),
@@ -21,7 +22,8 @@ class Chart extends StatelessWidget {
 
     for (final bucket in buckets) {
       if (bucket.totalExpenses > maxTotalExpense) {
-        maxTotalExpense = bucket.totalExpenses;
+        maxTotalExpense = bucket
+            .totalExpenses; //If the total expenses are higher than the current max, set it as the new max
       }
     }
 
@@ -61,12 +63,13 @@ class Chart extends StatelessWidget {
                   ChartBar(
                     fill: bucket.totalExpenses == 0
                         ? 0
-                        : bucket.totalExpenses / maxTotalExpense,
+                        : bucket.totalExpenses /
+                            maxTotalExpense, //Calculates the height of the bar based on the max total expense
                   )
               ],
             ),
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: 12), //Adds spacing
           Row(
             children: buckets
                 .map(

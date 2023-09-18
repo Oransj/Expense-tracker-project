@@ -1,19 +1,22 @@
 import 'package:flutter/material.dart';
 
 import 'package:expense_tracker/widgets/expenses.dart';
-import 'package:flutter/services.dart';
 
-var kColorScheme =
-    ColorScheme.fromSeed(seedColor: Color.fromARGB(255, 128, 0, 255));
+///The color scheme used in light mode
+var kColorScheme = ColorScheme.fromSeed(
+    seedColor: const Color.fromARGB(
+        255, 128, 0, 255)); //We use const to optimize the app
 
+///The dark color scheme used in dark mode
 var kDarkColorScheme = ColorScheme.fromSeed(
     brightness: Brightness.dark,
-    seedColor: Color.fromARGB(200, 0, 255, 179));
+    seedColor: const Color.fromARGB(200, 0, 255, 179));
 
 void main() {
   runApp(
     MaterialApp(
       darkTheme: ThemeData.dark().copyWith(
+        //We use copyWith to copy the theme and change only the properties we want
         useMaterial3: true,
         colorScheme: kDarkColorScheme,
         cardTheme: const CardTheme().copyWith(
@@ -56,8 +59,9 @@ void main() {
                   fontSize: 16),
             ),
       ),
-      themeMode: ThemeMode.system,
-      home: const Expenses(),
+      themeMode:
+          ThemeMode.system, //We use system to let the OS decide the theme
+      home: const Expenses(), //Sets the app start page
     ),
   );
 }

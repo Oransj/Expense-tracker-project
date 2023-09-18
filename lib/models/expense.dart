@@ -15,6 +15,7 @@ const categoryIcons = {
   Category.work: Icons.work_history,
 };
 
+/// Represents a single expense.
 class Expense {
   Expense(
       {required this.title,
@@ -34,6 +35,7 @@ class Expense {
   }
 }
 
+/// Represents a bucket of expenses for a single category.
 class ExpenseBucket {
   const ExpenseBucket({required this.category, required this.expenses});
 
